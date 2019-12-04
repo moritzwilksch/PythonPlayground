@@ -27,3 +27,7 @@ pl1 = Pipeline(steps=[
 
 # Fit-transform pipeline
 df = pl1.fit_transform(df)
+
+# %%
+# Save file
+df.to_csv("./data/preparedTitanic.csv")
