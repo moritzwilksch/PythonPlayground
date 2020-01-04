@@ -70,3 +70,26 @@ print(talk())
 def talk():
     return "This is a Text with MEssed-up Casing"
 print(talk())
+
+# %% [markdown]
+# # Example: Timing Execution
+# %%
+import time
+
+def time_execution(func):
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        res = func(*args, **kwargs)
+        print("Function", func.__name__, "(" + str(*args, **kwargs)+") returned:", res)
+        print("--- %s seconds ---" % (time.time() - start_time))
+    return wrapper
+
+@time_execution
+def multiply_until_n(n):
+    prod = 1
+    for i in range(1, n+1):
+        prod = prod*i
+    return prod
+
+multiply_until_n(5)
+multiply_until_n(500)
