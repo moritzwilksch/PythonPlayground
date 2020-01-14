@@ -15,5 +15,5 @@ df.info()
 
 # %%
 sns.set_style("ticks", rc={"figure.frameon": False, "font.family": "serif", "axes.spines.top": False, "axes.spines.right": False, "lines.linewidth": 0.9})
-plt.
 sns.lineplot(data=df, x="date", y="close")
+plt.savefig("apple.svg")
