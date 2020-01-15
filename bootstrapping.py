@@ -26,4 +26,3 @@ plt.show()
 # %%
 import scipy.stats as st
 st.t.interval(0.95, a)
-st.t

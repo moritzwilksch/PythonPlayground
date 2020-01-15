@@ -17,3 +17,13 @@ df.info()
 sns.set_style("ticks", rc={"figure.frameon": False, "font.family": "serif", "axes.spines.top": False, "axes.spines.right": False, "lines.linewidth": 0.9})
 sns.lineplot(data=df, x="date", y="close")
 plt.savefig("apple.svg")
+
+# %%
+df = sns.load_dataset("titanic")
+g = sns.barplot(data=df, x="pclass", y="fare", palette= ["orange", "white", "white"], edgecolor="black", errwidth=0)
+g.patches[0].set_hatch("//")
+g.patches[1].set_hatch("xxx")
+g.patches[2].set_hatch("oo")
+
+# %%
+g = sns.barplot(data=df, x="pclass", y="fare", edgecolor="black")
