@@ -20,7 +20,7 @@ plt.savefig("apple.svg")
 
 # %%
 df = sns.load_dataset("titanic")
-g = sns.barplot(data=df, x="pclass", y="fare", palette= ["orange", "white", "white"], edgecolor="black", errwidth=0)
+g = sns.barplot(data=df, x="pclass", y="fare", palette= ["orange", "white", "white"], linewidth=1, edgecolor="black", errwidth=0)
 g.patches[0].set_hatch("//")
 g.patches[1].set_hatch("xxx")
 g.patches[2].set_hatch("oo")
