@@ -22,3 +22,4 @@ bloomberg_url = "https://www.bloomberg.com/quote/SPX:IND"
 page = requests.get(bloomberg_url, headers=headers).content
 soup = BeautifulSoup(page, "html.parser")
 soup
+soup.find_all("span", attrs={"class":"priceText__1853e8a5"})
