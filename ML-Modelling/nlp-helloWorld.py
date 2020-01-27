@@ -29,11 +29,8 @@ text = [x.text.replace("\n", "").strip().lower()
         for x in soup.find_all("p")][3:-11]
 
 # %%
-auth = tweepy.OAuthHandler("RPy7jKwU9AA4IB631zs2bRiOM",
-                           "pqGdHgy41LWgIeVIuFeKTLglGmAuVC9lOCYeHeXjac1FA65i7O")
-auth.set_access_token("4697971562-AdnzSxkVt61lBU7zs40CQklxa6ECwkrIpdBUlLl",
-                      "0E2djEwDxlxGK20aUd5yT0iTJpz2slKIKoon45kN3kTvW")
-api = tweepy.API(auth)
+import createTwitterAPI, tweepy
+api = createTwitterAPI.create()
 # Works but only delivers 200 tweets max:
 # raw = api.user_timeline("BillGates", count=1000, tweet_mode="extended")
 
@@ -45,10 +42,10 @@ def load_tweets_to_disk(username: str, n: int, filename: str):
         pickle.dump(tweets, output_file)
 
 
-load_tweets_to_disk("keypousttchi", 200, "smallkp.pkl")
+load_tweets_to_disk("keypousttchi", 200, "ML-Modelling/smallkp.pkl")
 
 # %%
-with open("pousttchiTweets.pkl", "rb") as input_file:
+with open("ML-Modelling/pousttchiTweets.pkl", "rb") as input_file:
     tweets = pickle.load(input_file)
 
 text = [s.full_text for s in tweets]
