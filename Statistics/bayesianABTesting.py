@@ -70,3 +70,22 @@ means = [np.random.choice(b_samples, 500, replace=True).mean() for _ in range(10
 means = pd.Series(means).sort_values()
 means.plot(kind="hist", bins=100)
 np.percentile(means, [3, 97])
+
+# %%
+import scipy.stats as stats
+
+#Actual probabilities
+p_A = 0.05
+p_B = 0.04
+
+#User Traffic
+n_users = 13500
+n_A = stats.binom.rvs(n=n_users, p=0.5, size=1)[0]
+n_B = n_users - n_A
+
+#Conversions
+conversions_A = stats.bernoulli.rvs(p_A, size=n_A)
+conversions_B = stats.bernoulli.rvs(p_B, size=n_B)
+
+print("creative A was observed {} times and led to {} conversions".format(n_A, sum(conversions_A)))
+print("creative B was observed {} times and led to {} conversions".format(n_B, sum(conversions_B)))
