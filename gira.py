@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import sklearn
 import numpy as np
 from sklearn.model_selection import train_test_split
+import pandas as pd
 df = sns.load_dataset("tips")
 xtrain, xtest, ytrain, ytest = train_test_split(df[["total_bill", "sex", "smoker", "day", "time", "size"]], df["tip"])
 xtrain = pd.get_dummies(xtrain)
@@ -22,3 +23,10 @@ model.fit(xtrain, ytrain)
 
 # Schritt 3
 model.predict(xtest)
+
+# %%
+from sklearn.tree import DecisionTreeClassifier
+
+m = DecisionTreeClassifier(max_depth=5)
+m.fit(xtrain, ytrain)
+
