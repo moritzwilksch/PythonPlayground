@@ -39,7 +39,7 @@ a_posterior = beta(a_successes + 8, a_failures + 42)
 b_posterior = beta(b_successes + 8, b_failures + 42)
 
 # Sample from posterior
-n_trials = 100000
+n_trials = 10000
 a_samples = pd.Series(a_posterior.rvs(n_trials))
 b_samples = pd.Series(b_posterior.rvs(n_trials))
 bwins = sum(b_samples > a_samples)
@@ -65,11 +65,6 @@ ct = np.array([[a_successes, a_failures],
                 [b_successes, b_failures]])
 stats.chi2_contingency(ct)
 
-# %%
-means = [np.random.choice(b_samples, 500, replace=True).mean() for _ in range(1000)]
-means = pd.Series(means).sort_values()
-means.plot(kind="hist", bins=100)
-np.percentile(means, [3, 97])
 
 # %%
 import scipy.stats as stats
