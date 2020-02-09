@@ -66,6 +66,7 @@ ct = np.array([[a_successes, a_failures],
 stats.chi2_contingency(ct)
 
 
+
 # %%
 import scipy.stats as stats
 

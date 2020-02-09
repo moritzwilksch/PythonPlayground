@@ -25,8 +25,24 @@ model.fit(xtrain, ytrain)
 model.predict(xtest)
 
 # %%
-from sklearn.tree import DecisionTreeClassifier
+df = pd.read_csv("./data/preparedTitanic.csv")
+df = df.drop("Unnamed: 0", axis=1)
 
-m = DecisionTreeClassifier(max_depth=5)
-m.fit(xtrain, ytrain)
+from sklearn.model_selection import train_test_split
+xtrain, xtest, ytrain, ytest = train_test_split(df.drop(["Survived", "Name"], axis=1), df["Survived"])
 
+xtrain = pd.get_dummies(xtrain)
+xtest = pd.get_dummies(xtest)
+
+from sklearn.linear_model import LogisticRegression
+m1 = LogisticRegression(C=0.1, penalty="elasticnet", solver="saga", l1_ratio=1, max_iter=5000)
+#m1 = LogisticRegression(max_iter=1000)
+m1.fit(xtrain, ytrain)
+preds = m1.predict(xtest)
+
+from sklearn.metrics import confusion_matrix
+print(confusion_matrix(ytest, preds))
+print(m1.coef_)
+
+from sklearn.ensemble import RandomForestClassifier
+m2 = RandomForestClassifier(max_features=4)

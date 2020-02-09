@@ -15,7 +15,7 @@ b = stats.bernoulli(0.5)
 fig, ax = plt.subplots(len(n_flips), figsize=(5,5))
 for i in range(len(n_flips)):
     results = b.rvs(n_flips[i])
-    posterior = stats.beta(a=sum(results), b=len(results) - sum(results))
+    posterior = stats.beta(sum(results), b=len(results) - sum(results))
     x = np.arange(0, 1, 0.01)
     y = posterior.pdf(x)
     df = pd.DataFrame({"x": x, "y": y})
