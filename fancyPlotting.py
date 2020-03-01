@@ -26,4 +26,17 @@ g.patches[1].set_hatch("xxx")
 g.patches[2].set_hatch("oo")
 
 # %%
-g = sns.barplot(data=df, x="pclass", y="fare", edgecolor="black")
+sns.barplot(data=df, y="pclass", x="fare", hue="survived", hue_order=[1,0], edgecolor="black", dodge=False, orient="h", errwidth=0)
+
+# %%
+# Non-sense example, but shows how to plot with vanilla matplotlib via pandas, NOT SEABORN!
+sns.set_style("ticks")
+pt = pd.pivot_table(df, index="pclass",  columns="survived", values="fare")
+pt.plot(kind="barh", stacked=True, edgecolor="black", color=["0.8", "0.2"])
+plt.gca().set(xlabel="FARE", ylabel="PASSENGER CLASS", title="Fare per Class")
+# %%
+sns.set_style("ticks")
+df = sns.load_dataset("tips")
+g = sns.catplot(data=df, row="day", x="size", y="tip", kind="point", height=1, aspect=3, markers=".", color="#004260")
+
+# %%
