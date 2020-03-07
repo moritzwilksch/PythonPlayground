@@ -1,7 +1,9 @@
 # %%
 import pandas as pd
 import numpy as np
-from tensorflow_core import keras
+# from tensorflow_core import keras 
+import keras
+
 
 # %%
 from sklearn.preprocessing import LabelEncoder
@@ -26,7 +28,12 @@ m = keras.Sequential([
 ])
 
 m.compile("adam", "mse")
+m.fi
 pred = m.predict(X)
+
+
+
+
 
 # %%
 import matplotlib.pyplot as plt
@@ -40,3 +47,5 @@ df.plot(kind="scatter", x="x", y="y")
 
 for w, a in word_embedding.items():
     plt.annotate(w, (a[0], a[1]+0.005))
+
+# %%
