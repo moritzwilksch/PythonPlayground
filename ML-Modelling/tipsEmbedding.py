@@ -64,10 +64,10 @@ df = sns.load_dataset("tips")
 
 def prep_df_embedding(df):
     """ Preps data. SEPEARATES DAY SERIES (must be int 0-3) for extra input into NN """
-    day_series = pd.Series(df.day)
-    df = pd.get_dummies(df.drop("day", axis=1))
-    day_series = LabelEncoder().fit_transform(day_series)
-    df = StandardScaler().fit_transform(df)
+    day_series = LabelEncoder().fit_transform(pd.Series(df.day))
+    df = pd.get_dummies(df.drop("day", axis=1)).pipe(
+        StandardScaler().fit_transform
+    )
     return df, day_series
 
 
@@ -82,23 +82,30 @@ ytrain, ytest = np.array(ytrain), np.array(ytest)
 # %%
 # you MUST use the functional API to create models with branches!
 
+# The input layers. Need to be specified explicitly
 xin_day = keras.layers.Input(shape=(1,), name="day_data")
 xin_rest = keras.layers.Input(shape=(8,), name="rest_data")
 
+# Embedding the day-category. Concatenating the other (numerical) variables for the rest of the net
+# Note the layer_object = instanciate(args)(input_to_layer) notation!!!
 day_embedding = keras.layers.Embedding(4, 2, input_length=1)(xin_day)
 day_embedding_reshaped = keras.layers.Reshape((2,))(day_embedding)
 concat = keras.layers.Concatenate()([day_embedding_reshaped, xin_rest])
 
+# The rest of the network
 dense_layer_1 = keras.layers.Dense(units=4)(concat)
 prediction = keras.layers.Dense(units=1, activation="relu")(dense_layer_1)
 
+# No sequential model! Specify which objects are input and output
 branched_model = keras.models.Model(
     inputs=[xin_day, xin_rest], outputs=prediction)
 
-branched_model.compile(optimizer="nadam", loss="mae",
-                       metrics=["mean_absolute_error"])
+# Compile and fit.
+# The input – instead of xtrain – is actually a list/dict of TWO arrays (1 for the days to be embedded, 1 for the rest)
+branched_model.compile(optimizer="nadam", loss="mae", metrics=["mean_absolute_error"])
 history = branched_model.fit(x={"day_data": xtrain_days, "rest_data": xtrain}, y=ytrain, validation_data=([xtest_days, xtest], ytest), epochs=100)
 
 # %%
+# Plot learning curves
 lc = pd.DataFrame({"train_mae": history.history["mean_absolute_error"], "val_mae": history.history["val_mean_absolute_error"]})
 lc.plot()
