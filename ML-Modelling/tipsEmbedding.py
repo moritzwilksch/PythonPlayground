@@ -109,3 +109,12 @@ history = branched_model.fit(x={"day_data": xtrain_days, "rest_data": xtrain}, y
 # Plot learning curves
 lc = pd.DataFrame({"train_mae": history.history["mean_absolute_error"], "val_mae": history.history["val_mean_absolute_error"]})
 lc.plot()
+
+# %%
+# Just for fun...
+embeddings = pd.DataFrame(branched_model.layers[1].get_weights()[0], index=["Fri", "Sat", "Sun", "Thur"], columns=["x", "y"])
+embeddings.plot(kind="scatter", x="x", y="y")
+
+for name, a in embeddings.iterrows():
+    plt.gca().annotate(name, (a[0], a[1]))
+plt.show()
