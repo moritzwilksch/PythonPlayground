@@ -35,7 +35,7 @@ b_failures = group_size - b_successes
 
 # Model posterior as beta distribution
 # Added to the prior beta parameters alpha = 8 (num of successes)
-# and beta = 42 (the num of failures)
+# and beta = 42 (the num of failures) which equates to a prior of roughly 19% conversion
 a_posterior = beta(a_successes + 8, a_failures + 42)
 b_posterior = beta(b_successes + 8, b_failures + 42)
 
