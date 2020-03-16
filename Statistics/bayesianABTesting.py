@@ -1,3 +1,4 @@
+# https://medium.com/hockey-stick/tl-dr-bayesian-a-b-testing-with-python-c495d375db4d
 # %%
 import scipy.stats as stats
 import pandas as pd
@@ -71,17 +72,35 @@ stats.chi2_contingency(ct)
 import scipy.stats as stats
 
 #Actual probabilities
-p_A = 0.05
-p_B = 0.04
+p_A = 0.15
+p_B = 0.14
 
-#User Traffic
-n_users = 13500
-n_A = stats.binom.rvs(n=n_users, p=0.5, size=1)[0]
-n_B = n_users - n_A
+conversion_rates_A = []
+conversion_rates_B = []
 
-#Conversions
-conversions_A = stats.bernoulli.rvs(p_A, size=n_A)
-conversions_B = stats.bernoulli.rvs(p_B, size=n_B)
+for _ in range(5000):
+    #User Traffic
+    n_users = 13500
+    n_A = stats.binom.rvs(n=n_users, p=0.5, size=1)[0]
+    n_B = n_users - n_A
 
-print("creative A was observed {} times and led to {} conversions".format(n_A, sum(conversions_A)))
-print("creative B was observed {} times and led to {} conversions".format(n_B, sum(conversions_B)))
+    #Conversions
+    conversions_A = stats.bernoulli.rvs(p_A, size=n_A)
+    conversion_rates_A.append(sum(conversions_A)/n_A)
+    conversions_B = stats.bernoulli.rvs(p_B, size=n_B)
+    conversion_rates_B.append(sum(conversions_B)/n_B)
+
+#print("creative A was observed {} times and led to {} conversions".format(n_A, sum(conversions_A)))
+#print("creative B was observed {} times and led to {} conversions".format(n_B, sum(conversions_B)))
+
+# %%
+sns.distplot(conversion_rates_A, label="A")
+sns.distplot(conversion_rates_B, label="B")
+plt.legend()
+
+# %% [markdown]
+# ## Chance of being Better
+# %%
+df = pd.DataFrame({"a": conversion_rates_A, "b": conversion_rates_B})
+print(f"Chance of A being better than B = {np.sum(df.a > df.b)/len(df)}")
+print(f"Chance of B being better than A = {np.sum(df.a < df.b)/len(df)}")
