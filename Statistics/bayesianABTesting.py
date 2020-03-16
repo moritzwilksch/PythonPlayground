@@ -20,6 +20,7 @@ print(stats.ttest_ind(df.a, df.b))
 
 # %% [markdown]
 # # Bayesian A/B Testing
+# # Example #1 - Conversion Rates directly modeled as Beta-Distribution
 # %%
 from scipy.stats import beta
 np.random.seed(42)
@@ -67,7 +68,8 @@ ct = np.array([[a_successes, a_failures],
 stats.chi2_contingency(ct)
 
 
-
+# %% [markdown]
+# # Example #2 - Conversion Rates
 # %%
 import scipy.stats as stats
 
@@ -90,9 +92,6 @@ for _ in range(5000):
     conversions_B = stats.bernoulli.rvs(p_B, size=n_B)
     conversion_rates_B.append(sum(conversions_B)/n_B)
 
-#print("creative A was observed {} times and led to {} conversions".format(n_A, sum(conversions_A)))
-#print("creative B was observed {} times and led to {} conversions".format(n_B, sum(conversions_B)))
-
 # %%
 sns.distplot(conversion_rates_A, label="A")
 sns.distplot(conversion_rates_B, label="B")
@@ -104,3 +103,30 @@ plt.legend()
 df = pd.DataFrame({"a": conversion_rates_A, "b": conversion_rates_B})
 print(f"Chance of A being better than B = {np.sum(df.a > df.b)/len(df)}")
 print(f"Chance of B being better than A = {np.sum(df.a < df.b)/len(df)}")
+
+# %% [markdown]
+# # Example #3 - Body Heights
+
+# %%
+# Height of two groups
+a = stats.norm(168, 6)
+b = stats.norm(172, 7)
+c = stats.norm(182, 5)
+
+sample_times = 10000
+samples_a = pd.Series(a.rvs(sample_times))
+samples_b = pd.Series(b.rvs(sample_times))
+samples_c = pd.Series(c.rvs(sample_times))
+
+# %%
+sns.distplot(samples_a, label="a")
+sns.distplot(samples_b, label="b")
+sns.distplot(samples_c, label="c")
+plt.legend()
+plt.show()
+
+# %%
+print(f"Chance of A being greater than B = {np.sum(samples_a > samples_b)/sample_times}")
+print(f"Chance of B being greater than A = {np.sum(samples_b > samples_a)/sample_times}")
+print(f"Chance of C being greater than B = {np.sum(samples_c > samples_b)/sample_times}")
+print(f"Chance of C being greater than A = {np.sum(samples_c > samples_a)/sample_times}")
