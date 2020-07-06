@@ -46,7 +46,7 @@ from sklearn.base import TransformerMixin
 
 
 class DFStandardScaler(TransformerMixin):
-    """A pandas friendl Standard Scale. Takes a DataFrame, standardizes it and returns the standardized DataFrame
+    """A pandas friendly Standard Scaler. Takes a DataFrame, standardizes it and returns the standardized DataFrame
     with preserved column names."""
 
     def __init__(self):
