@@ -12,10 +12,10 @@ df = pd.get_dummies(sns.load_dataset('tips'))
 xtrain, xval, ytrain, yval = train_test_split(df.drop('tip', axis=1), df['tip'])
 xtrain.info()
 
-xtrain = torch.Tensor(xtrain.values)
-ytrain = torch.Tensor(ytrain.values)
-xval = torch.Tensor(xval.values)
-yval = torch.Tensor(yval.values)
+xtrain = torch.Tensor(xtrain.values).cuda()
+ytrain = torch.Tensor(ytrain.values).cuda()
+xval = torch.Tensor(xval.values).cuda()
+yval = torch.Tensor(yval.values).cuda()
 
 trainloader = torch.utils.data.DataLoader(torch.utils.data.TensorDataset(xtrain, ytrain), batch_size=32, shuffle=True, num_workers=8)
 
@@ -27,6 +27,8 @@ net = nn.Sequential(
     # nn.ReLU(),
     # nn.Linear(10, 1)
 )
+
+net = net.cuda()
 
 opt = optim.Adam(net.parameters(), lr=0.001)
 criterion = nn.L1Loss()
