@@ -88,7 +88,7 @@ model4 = keras.Sequential([
     keras.layers.Dense(1, activation='sigmoid')
 ])
 model4.compile('adam', 'binary_crossentropy')
-model4.fit(xtrain.values, ytrain, validation_data=(xtest, ytest), epochs=10, batch_size=32)
+model4.fit(xtrain.values, ytrain, validation_data=(xtest, ytest), epochs=100, batch_size=32)
 eval_model(ytest, model4.predict_classes(xtest.values))
 
 #%%
