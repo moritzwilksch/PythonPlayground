@@ -177,5 +177,3 @@ for topic in range(3):
   print(lr.score(*xy_params))
   for idx in np.argsort(lr.coef_)[0, -10:]:
     print(f"- {v[idx]}")
-
-#%%
