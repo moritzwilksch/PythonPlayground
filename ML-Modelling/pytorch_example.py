@@ -33,9 +33,9 @@ def init_weights(m):
 
 #%%
 net = nn.Sequential(
-    nn.Linear(12, 20),
+    nn.Linear(12, 4),
     nn.ReLU(),
-    nn.Linear(20, 1),
+    nn.Linear(4, 1),
     #nn.ReLU(),
     #nn.Linear(5, 1)
 )
