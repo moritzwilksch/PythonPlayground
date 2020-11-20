@@ -22,9 +22,9 @@ class ScrapytestPipeline:
         self.file.close()
 
     def process_item(self, item, spider):
-        dirty_preis = item['preis']
-        match = re.match(r'\d+\.\d+', dirty_preis)
-        item['preis'] = match.group().replace(".", "") if match else "0"
+        # dirty_preis = item['preis']
+        # match = re.match(r'\d+\.\d+', dirty_preis)
+        # item['preis'] = match.group().replace(".", "") if match else "0"
 
 
         self.exporter.export_item(item)

@@ -1,6 +1,11 @@
+from json import load
 from typing import List
 import scrapy
+from scrapy.loader import ItemLoader
+from itemloaders.processors import TakeFirst
 from ScrapyTest.items import Listing
+
+proxy_server = "79.120.177.106:8080"
 
 class Ebaykaz(scrapy.Spider):
     name = "ebaykaz"
@@ -11,17 +16,35 @@ class Ebaykaz(scrapy.Spider):
     
     def parse(self, response):
         for div in response.css("li.ad-listitem").css("article"):
-            yield Listing(
-                {
-                'heading': div.css("div.aditem-main").css("h2").css("a::text").get(),
-                'link': div.css("div.aditem-main").css("h2").css("a::attr(href)").get(),
-                'descr': div.css("div.aditem-main").css("p::text").get(),
-                'endtxt': div.css("div.aditem-main").css("p.text-module-end").css("span::text").getall(),
-                'preis': div.css("div.aditem-details").css("strong::text").get()
-            }
-            )
+            loader = ItemLoader(Listing(), selector=div)
+            loader.default_output_processor = TakeFirst()
+            loader.add_css('heading', "div.aditem-main h2 a::text")
+            loader.add_css('link', "div.aditem-main h2 a::attr(href)")
+            loader.add_css('descr', "div.aditem-main p::text")
+            loader.add_css('size', "div.aditem-main p.text-module-end span::text")
+            loader.add_css('rooms', "div.aditem-main p.text-module-end span::text")
+            loader.add_css('preis', "div.aditem-details strong::text")
+            top_level_item = loader.load_item()
+
+            yield scrapy.Request("https://www.ebay-kleinanzeigen.de" + top_level_item['link'], callback=self.parse_detail_page, meta={'item': top_level_item,'proxy': proxy_server})
+
+        """yield Listing(
+            {
+            'heading': div.css("div.aditem-main h2 a::text").get(),
+            'link': div.css("div.aditem-main h2 a::attr(href)").get(),
+            'descr': div.css("div.aditem-main p::text").get(),
+            'endtxt': div.css("div.aditem-main p.text-module-end span::text").getall(),
+            'preis': div.css("div.aditem-details strong::text").get()
+        }
+        )"""
         
 
         next_page = response.css("a.pagination-next::attr(href)").get()
         if next_page:
-            yield scrapy.Request("https://www.ebay-kleinanzeigen.de/" + next_page)
+            yield scrapy.Request("https://www.ebay-kleinanzeigen.de/" + next_page, meta={'proxy': proxy_server})
+
+    def parse_detail_page(self, response):
+        item = response.meta['item']
+        loader = ItemLoader(item, response=response)
+        loader.add_css("ausstattung", "li.checktag::text")
+        yield loader.load_item()
