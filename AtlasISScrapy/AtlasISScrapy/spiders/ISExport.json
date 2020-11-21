@@ -1,0 +1,236 @@
+[
+    {
+        "stadtteil": "Waldstadt I",
+        "name": "Am Fenn",
+        "link": "/orte/deutschland/brandenburg/potsdam/waldstadt-i/am-fenn",
+        "demographics": {
+            "privateHouseholds": "1",
+            "commercials": "0",
+            "residentsAge": "55-59",
+            "durationOfResidence": "6-8",
+            "families": "Mittel",
+            "singles": "Mittel"
+        }
+    },
+    {
+        "stadtteil": "Waldstadt II",
+        "name": "Am Moosfenn",
+        "link": "/orte/deutschland/brandenburg/potsdam/waldstadt-ii/am-moosfenn",
+        "demographics": {
+            "privateHouseholds": "14",
+            "commercials": "1",
+            "residentsAge": "45-49",
+            "durationOfResidence": "6-8",
+            "families": "Mittel",
+            "singles": "Mittel"
+        }
+    },
+    {
+        "stadtteil": "Waldstadt I",
+        "name": "Zur Nuthe",
+        "link": "/orte/deutschland/brandenburg/potsdam/waldstadt-i/zur-nuthe",
+        "demographics": {
+            "privateHouseholds": "1",
+            "commercials": "0",
+            "residentsAge": "55-59",
+            "durationOfResidence": "6-8",
+            "families": "Hoch",
+            "singles": "Mittel"
+        }
+    },
+    {
+        "stadtteil": "Golm",
+        "name": "Zum M\u00fchlenteich",
+        "link": "/orte/deutschland/brandenburg/potsdam/golm/zum-m%C3%BChlenteich",
+        "demographics": {
+            "privateHouseholds": "67",
+            "commercials": "0",
+            "residentsAge": "35-39",
+            "durationOfResidence": "2-3",
+            "families": "k. A.",
+            "singles": "Niedrig"
+        }
+    },
+    {
+        "stadtteil": "Waldstadt I",
+        "name": "Unter den Eichen",
+        "link": "/orte/deutschland/brandenburg/potsdam/waldstadt-i/unter-den-eichen",
+        "demographics": {
+            "privateHouseholds": "1",
+            "commercials": "0",
+            "residentsAge": "50-54",
+            "durationOfResidence": "6-8",
+            "families": "Hoch",
+            "singles": "Mittel"
+        }
+    },
+    {
+        "stadtteil": "Waldstadt I",
+        "name": "Tiroler Damm",
+        "link": "/orte/deutschland/brandenburg/potsdam/waldstadt-i/tiroler-damm",
+        "demographics": {
+            "privateHouseholds": "9",
+            "commercials": "0",
+            "residentsAge": "55-59",
+            "durationOfResidence": "6-8",
+            "families": "Mittel",
+            "singles": "Mittel"
+        }
+    },
+    {
+        "stadtteil": "Waldstadt I",
+        "name": "Meisenweg",
+        "link": "/orte/deutschland/brandenburg/potsdam/waldstadt-i/meisenweg",
+        "demographics": {
+            "privateHouseholds": "1",
+            "commercials": "0",
+            "residentsAge": "55-59",
+            "durationOfResidence": "8-10",
+            "families": "Sehr hoch",
+            "singles": "Mittel"
+        }
+    },
+    {
+        "stadtteil": "Waldstadt I",
+        "name": "Lisdorf",
+        "link": "/orte/deutschland/brandenburg/potsdam/waldstadt-i/lisdorf",
+        "demographics": {
+            "privateHouseholds": "1",
+            "commercials": "0",
+            "residentsAge": "50-54",
+            "durationOfResidence": "8-10",
+            "families": "Mittel",
+            "singles": "Mittel"
+        }
+    },
+    {
+        "stadtteil": "Waldstadt I",
+        "name": "K\u00e4uzchenweg",
+        "link": "/orte/deutschland/brandenburg/potsdam/waldstadt-i/k%C3%A4uzchenweg",
+        "demographics": {
+            "privateHouseholds": "1",
+            "commercials": "0",
+            "residentsAge": "55-59",
+            "durationOfResidence": "8-10",
+            "families": "k. A.",
+            "singles": "Niedrig"
+        }
+    },
+    {
+        "stadtteil": "Waldstadt I",
+        "name": "K\u00e4the-Kollwitz-Str.",
+        "link": "/orte/deutschland/brandenburg/potsdam/waldstadt-i/k%C3%A4the-kollwitz-strasse",
+        "demographics": {
+            "privateHouseholds": "9",
+            "commercials": "0",
+            "residentsAge": "50-54",
+            "durationOfResidence": "6-8",
+            "families": "Mittel",
+            "singles": "Hoch"
+        }
+    },
+    {
+        "stadtteil": "Waldstadt I",
+        "name": "Kuckucksruf",
+        "link": "/orte/deutschland/brandenburg/potsdam/waldstadt-i/kuckucksruf",
+        "demographics": {
+            "privateHouseholds": "3",
+            "commercials": "0",
+            "residentsAge": "55-59",
+            "durationOfResidence": "8-10",
+            "families": "Sehr hoch",
+            "singles": "Mittel"
+        }
+    },
+    {
+        "stadtteil": "Waldstadt I",
+        "name": "Johannes-R.-Becher-Str.",
+        "link": "/orte/deutschland/brandenburg/potsdam/waldstadt-i/johannes-r-becher-strasse",
+        "demographics": {
+            "privateHouseholds": "7",
+            "commercials": "0",
+            "residentsAge": "55-59",
+            "durationOfResidence": "6-8",
+            "families": "Niedrig",
+            "singles": "Hoch"
+        }
+    },
+    {
+        "stadtteil": "Waldstadt I",
+        "name": "Heinrich-Mann-Allee",
+        "link": "/orte/deutschland/brandenburg/potsdam/waldstadt-i/heinrich-mann-allee",
+        "demographics": {
+            "privateHouseholds": "1",
+            "commercials": "0",
+            "residentsAge": "k. A.",
+            "durationOfResidence": "k. A.",
+            "families": "k. A.",
+            "singles": "Hoch"
+        }
+    },
+    {
+        "stadtteil": "Waldstadt I",
+        "name": "Friedrich-Wolf-Str.",
+        "link": "/orte/deutschland/brandenburg/potsdam/waldstadt-i/friedrich-wolf-strasse",
+        "demographics": {
+            "privateHouseholds": "5",
+            "commercials": "0",
+            "residentsAge": "45-49",
+            "durationOfResidence": "6-8",
+            "families": "Mittel",
+            "singles": "Hoch"
+        }
+    },
+    {
+        "stadtteil": "Waldstadt I",
+        "name": "Erich-Weinert-Str.",
+        "link": "/orte/deutschland/brandenburg/potsdam/waldstadt-i/erich-weinert-strasse",
+        "demographics": {
+            "privateHouseholds": "13",
+            "commercials": "0",
+            "residentsAge": "55-59",
+            "durationOfResidence": "6-8",
+            "families": "Niedrig",
+            "singles": "Hoch"
+        }
+    },
+    {
+        "stadtteil": "Waldstadt I",
+        "name": "Eduard-Claudius-Str.",
+        "link": "/orte/deutschland/brandenburg/potsdam/waldstadt-i/eduard-claudius-strasse",
+        "demographics": {
+            "privateHouseholds": "1",
+            "commercials": "0",
+            "residentsAge": "50-54",
+            "durationOfResidence": "8-10",
+            "families": "Hoch",
+            "singles": "Hoch"
+        }
+    },
+    {
+        "stadtteil": "Waldstadt I",
+        "name": "Drewitzer Str.",
+        "link": "/orte/deutschland/brandenburg/potsdam/waldstadt-i/drewitzer-strasse",
+        "demographics": {
+            "privateHouseholds": "6",
+            "commercials": "0",
+            "residentsAge": "50-54",
+            "durationOfResidence": "6-8",
+            "families": "Hoch",
+            "singles": "Hoch"
+        }
+    },
+    {
+        "stadtteil": "Waldstadt I",
+        "name": "Brunnenallee",
+        "link": "/orte/deutschland/brandenburg/potsdam/waldstadt-i/brunnenallee",
+        "demographics": {
+            "privateHouseholds": "19",
+            "commercials": "0",
+            "residentsAge": "40-44",
+            "durationOfResidence": "0-1",
+            "families": "k. A.",
+            "singles": "k. A."
+        }
+    }
+]

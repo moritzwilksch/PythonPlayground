@@ -1,5 +1,7 @@
 # https://medium.com/hockey-stick/tl-dr-bayesian-a-b-testing-with-python-c495d375db4d
-# %%
+#%%
+import time
+tic = time.time()
 import scipy.stats as stats
 import pandas as pd
 import numpy as np
@@ -130,3 +132,6 @@ print(f"Chance of A being greater than B = {np.sum(samples_a > samples_b)/sample
 print(f"Chance of B being greater than A = {np.sum(samples_b > samples_a)/sample_times}")
 print(f"Chance of C being greater than B = {np.sum(samples_c > samples_b)/sample_times}")
 print(f"Chance of C being greater than A = {np.sum(samples_c > samples_a)/sample_times}")
+
+tac = time.time()
+print(tac-tic)
