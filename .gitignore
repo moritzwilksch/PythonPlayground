@@ -1,3 +1,4 @@
 createTwitterAPI.py
 .scrapy/
 .DS_Store
+*.pkl
