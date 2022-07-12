@@ -56,3 +56,6 @@ df.withColumn("created_at", F.to_timestamp("created_at")).groupBy(
 df.filter(F.col("text").like("%AMZN%")).show()
 
 #%%
+df.withColumn("words", F.split("text", " ")).withColumn(
+    "words", F.size(F.filter("words", lambda x: x != "Unusual"))
+).take(1)
