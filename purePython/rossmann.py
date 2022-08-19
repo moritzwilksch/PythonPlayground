@@ -1,4 +1,6 @@
 #%%
+from ast import Or
+from timeit import timeit
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -101,6 +103,52 @@ def add_features(data: pd.DataFrame) -> pd.DataFrame:
     return data.to_pandas()
 
 
-X.pipe(add_features)
+X = X.pipe(add_features).query("Sales > 0")
 
 #%%
+x = X[
+    [
+        "DayOfWeek",
+        "Open",
+        "Promo",
+        "StateHoliday",
+        "SchoolHoliday",
+        "StoreType",
+        "Assortment",
+        # "CompetitionDistance",
+        "Promo2",
+        # "PromoInterval",
+        # "on_promo",
+    ]
+]
+y = X["Sales"]
+
+#%%
+from sklearn.metrics import mean_absolute_error
+from sklearn.linear_model import LinearRegression, GammaRegressor, TweedieRegressor
+from sklearn.preprocessing import OrdinalEncoder
+
+oe = OrdinalEncoder()
+x.loc[:, ["StoreType", "Assortment"]] = oe.fit_transform(x[["StoreType", "Assortment"]])
+
+# model = GammaRegressor()
+# model = LinearRegression()
+model = TweedieRegressor(power=3)
+
+model.fit(x, y)
+pred = model.predict(x)
+print(mean_absolute_error(y, pred))
+
+#%%
+store = pl.from_pandas(store)
+#%%
+store.select(
+    pl.concat_str(
+        [
+            pl.col("CompetitionOpenSinceYear").cast(pl.Int16).cast(pl.Utf8),
+            pl.lit("-"),
+            pl.col("CompetitionOpenSinceMonth").cast(pl.Int16).cast(pl.Utf8),
+            pl.lit("-01"),
+        ]
+    ).alias("date")
+).select(pl.col("date").str.strptime(pl.Date, "%Y-%-m-%d"))
