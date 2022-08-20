@@ -3,3 +3,4 @@ createTwitterAPI.py
 .DS_Store
 *.pkl
 .env
+data/*
