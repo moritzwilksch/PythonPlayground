@@ -140,6 +140,32 @@ pred = model.predict(x)
 print(mean_absolute_error(y, pred))
 
 #%%
+import statsmodels.formula.api as smf
+import numpy as np
+
+model = smf.ols(
+    formula="np.log(Sales) ~ Open + Promo + StateHoliday + SchoolHoliday + C(StoreType) + C(Assortment)",
+    data=pd.concat([x, y], axis=1),
+).fit()
+print(model.summary())
+
+
+#%%
+from statsmodels.graphics.gofplots import qqplot
+
+qqplot(model.resid, line="45")
+
+#%%
+from statsmodels.stats.diagnostic import kstest_normal
+
+kstest_normal(model.resid)
+#%%
+dir(model)
+
+#%%
+sns.displot(model.resid)
+
+#%%
 store = pl.from_pandas(store)
 #%%
 store.select(
@@ -152,3 +178,5 @@ store.select(
         ]
     ).alias("date")
 ).select(pl.col("date").str.strptime(pl.Date, "%Y-%-m-%d"))
+
+
