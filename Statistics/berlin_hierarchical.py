@@ -61,6 +61,7 @@ def fix_sqm(data: pd.DataFrame) -> pd.DataFrame:
 
 clean = df.copy().pipe(filter_data).pipe(fix_factor_100).pipe(fix_rooms).pipe(fix_sqm)
 
+
 #%%
 plt.hist(
     data=clean.query("(to_rent == False) & (price < 10_000_000)"), x="price", bins=100
@@ -85,19 +86,23 @@ clean["square_meters"].fillna(clean.groupby("rooms")["square_meters"].transform(
 
 
 #%%
-rentals = clean.query("to_rent == True")
+rentals = clean.query("to_rent == True").dropna().query("price <= 10_000")
 
 
 #%%
 import statsmodels.formula.api as smf
+import statsmodels.api as sm
 
-model = smf.ols("np.log(price + 1) ~ C(object_type) + square_meters + C(zip_code)", data=rentals.dropna()).fit()
+# model = smf.mixedlm("np.log(price + 1) ~ C(object_type) + square_meters", data=rentals, groups=rentals["zip_code"]).fit()
+model = smf.glm("np.log(price + 1) ~ C(object_type) + square_meters", data=rentals, family=sm.families.Gamma()).fit()
 print(model.summary())
+plt.hist(model.resid_response, bins=1000)
+
 
 #%%
 from lightgbm import LGBMRegressor
 FEATURES = ["object_type", "square_meters", "zip_code", "private_offer", "rooms"]
-model = LGBMRegressor()
+model = LGBMRegressor(min_child_samples=200, reg_lambda=100, reg_alpha=100)
 model.fit(rentals[FEATURES], rentals["price"])
 
 #%%
@@ -106,4 +111,4 @@ plot_importance(model)
 
 #%%
 from sklearn.inspection import partial_dependence, PartialDependenceDisplay
-PartialDependenceDisplay.from_estimator(model, rentals[FEATURES], ["square_meters"])  # TODO: pdp looks wonky
+PartialDependenceDisplay.from_estimator(model, rentals[FEATURES], ["square_meters"]) 
