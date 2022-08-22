@@ -1,6 +1,7 @@
 #%%
 from logging.config import valid_ident
 from multiprocessing.sharedctypes import Value
+from tkinter import ON
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -88,27 +89,46 @@ clean["square_meters"].fillna(clean.groupby("rooms")["square_meters"].transform(
 #%%
 rentals = clean.query("to_rent == True").dropna().query("price <= 10_000")
 
+#%%
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder
 
+pipeline = ColumnTransformer(
+    [
+        ("ohe", OneHotEncoder(sparse=False), ["object_type", "zip_code"]),
+    ],
+    remainder="passthrough",
+)
+
+pd.DataFrame(pipeline.fit_transform(rentals), columns=pipeline.get_feature_names_out())
 #%%
 import statsmodels.formula.api as smf
 import statsmodels.api as sm
 
 # model = smf.mixedlm("np.log(price + 1) ~ C(object_type) + square_meters", data=rentals, groups=rentals["zip_code"]).fit()
-model = smf.glm("np.log(price + 1) ~ C(object_type) + square_meters", data=rentals, family=sm.families.Gamma()).fit()
+model = smf.glm(
+    "np.log(price + 1) ~ C(object_type) + square_meters",
+    data=rentals,
+    family=sm.families.Gamma(),
+).fit()
 print(model.summary())
 plt.hist(model.resid_response, bins=1000)
 
 
 #%%
 from lightgbm import LGBMRegressor
+
 FEATURES = ["object_type", "square_meters", "zip_code", "private_offer", "rooms"]
 model = LGBMRegressor(min_child_samples=200, reg_lambda=100, reg_alpha=100)
 model.fit(rentals[FEATURES], rentals["price"])
 
 #%%
 from lightgbm.plotting import plot_importance
+
 plot_importance(model)
 
 #%%
 from sklearn.inspection import partial_dependence, PartialDependenceDisplay
-PartialDependenceDisplay.from_estimator(model, rentals[FEATURES], ["square_meters"]) 
+
+PartialDependenceDisplay.from_estimator(model, rentals[FEATURES], ["square_meters"])
