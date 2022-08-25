@@ -1,14 +1,14 @@
 #%%
-import pandas as pd
-import polars as pl
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+import polars as pl
 import seaborn as sns
 
 #%%
-import dask.dataframe as dd
-from dask.distributed import Client
-client = Client()
+# import dask.dataframe as dd
+# from dask.distributed import Client
+# client = Client()
 
 
 #%%
@@ -54,40 +54,47 @@ print(f"Dropped {len(df) - len(clean)} rows.")
 #%%
 from lightgbm import LGBMRegressor
 from sklearn.model_selection import train_test_split
-
-X = clean.drop(
-    [
-        "tpep_pickup_datetime",
-        "tpep_dropoff_datetime",
-        "tip_amount",
-        "total_amount",
-        "trip_duration",
-        "fare_amount",
-        "extra",
-        "mta_tax",
-        "tolls_amount",
-        "improvement_surcharge",
-    ],
-    axis=1,
-)
-y = clean["total_amount"]
-
-xtrainval, xtest, ytrainval, ytest = train_test_split(X, y, random_state=42)
-xtrain, xval, ytrain, yval = train_test_split(xtrainval, ytrainval, random_state=42)
+from sklearn.pipeline import Pipeline
 
 
+def split_data(clean: pd.DataFrame) -> tuple:
+    X = clean.drop(
+        [
+            "tpep_pickup_datetime",
+            "tpep_dropoff_datetime",
+            "tip_amount",
+            "total_amount",
+            "trip_duration",
+            "fare_amount",
+            "extra",
+            "mta_tax",
+            "tolls_amount",
+            "improvement_surcharge",
+            "congestion_surcharge",
+        ],
+        axis=1,
+    )
+    y = clean["total_amount"]
+
+    xtrainval, xtest, ytrainval, ytest = train_test_split(X, y, random_state=42)
+    xtrain, xval, ytrain, yval = train_test_split(xtrainval, ytrainval, random_state=42)
+
+    return X, y, xtrain, ytrain, xval, yval, xtest, ytest
+
+
+X, y, xtrain, ytrain, xval, yval, xtest, ytest = split_data(clean)
 #%%
 from lightgbm.callback import early_stopping
 
 model = LGBMRegressor(n_estimators=1_000, num_leaves=32, objective="mae")
-# model.fit(
-#     xtrain,
-#     ytrain,
-#     eval_set=(xval, yval),
-#     eval_metric=["mape", "mae"],
-#     callbacks=[early_stopping(500)],
-#     verbose=50,
-# )
+model.fit(
+    xtrain,
+    ytrain,
+    eval_set=(xval, yval),
+    eval_metric=["mape", "mae"],
+    callbacks=[early_stopping(500)],
+    verbose=50,
+)
 
 #%%
 val_preds = model.predict(xval)
@@ -117,18 +124,74 @@ PartialDependenceDisplay.from_estimator(
 )
 
 #%%
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.impute import KNNImputer
+from sklearn.compose import ColumnTransformer
+
+# Linear Model
+correct_congestion_surcharge = clean.eval(
+    "total_amount - improvement_surcharge - tolls_amount - tip_amount - mta_tax - extra - fare_amount"
+).round(1)
+
+imputation_condition = clean["congestion_surcharge"].isna() & (
+    clean.eval(
+        "improvement_surcharge + tolls_amount + tip_amount + mta_tax + extra + fare_amount"
+    ).round(2)
+    + correct_congestion_surcharge
+    == clean["total_amount"]
+)
+clean_nona = clean.assign(
+    airport_fee=lambda d: d["airport_fee"].fillna(0),
+    congestion_surcharge=np.where(
+        imputation_condition,
+        correct_congestion_surcharge,
+        clean["congestion_surcharge"],
+    ),
+)
+clean_nona = clean_nona.assign(
+    passenger_count=lambda d: d["passenger_count"].ffill(),
+    store_and_fwd_flag=lambda d: d["store_and_fwd_flag"].ffill(),
+)
+
+# X, y, xtrain, ytrain, xval, yval, xtest, ytest = split_data(clean_nona)
+
+# impute_transforms = ColumnTransformer(
+#     [
+#         ("ss", StandardScaler(), X.select_dtypes(np.number).columns),
+#         ("ohe", OneHotEncoder(sparse=False), X.select_dtypes("category").columns),
+#     ]
+# )
+
+# impute_pipeline = Pipeline([("transforms", impute_transforms), ("impute", KNNImputer())])
+
+
+# xtrain_nona = impute_pipeline.fit_transform(xtrain, ytrain)
+# xval_nona = impute_pipeline.transform(xval)
+
+
+#%%
+from scipy import stats
+
+stats.chi2_contingency(
+    clean["RatecodeID"].value_counts().values,
+    clean["RatecodeID"].ffill().value_counts().values,
+)
+
+#%%
+
+
+#%%
+
 
 # TODO
 # - correlation of explicit missingness
 
 
-
-
 #%%
-df2 = dd.from_pandas(df, npartitions=6)
+# df2 = dd.from_pandas(df, npartitions=6)
 
-#%%
-df2.corr().compute()
+# #%%
+# df2.corr().compute()
 
-#%%``
-client.shutdown()
+# #%%``
+# client.shutdown()
