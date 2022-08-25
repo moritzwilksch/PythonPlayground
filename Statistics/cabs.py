@@ -1,4 +1,5 @@
 #%%
+from code import compile_command
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -195,3 +196,47 @@ stats.chi2_contingency(
 
 # #%%``
 # client.shutdown()
+
+#%%
+@np.vectorize
+def poisson_deviance(y, yhat):
+    if y == 0 or yhat == 0:
+        log_term = 0
+    else:
+        log_term = np.log(y / yhat)
+
+    return y * log_term - (y - yhat)
+
+
+a = np.array([1])
+b = np.array([4])
+
+print(poisson_deviance(a, b))
+
+#%%
+x, y = np.meshgrid(np.arange(0, 10, 0.1), np.arange(0, 10, 0.1))
+z = poisson_deviance(x, y)
+
+#%%
+fig, ax = plt.subplots(figsize=(6, 5))
+cf = ax.contourf(x, y, z, levels=50, cmap="inferno")
+fig.colorbar(cf)
+ax.set_xlim(0, 10)
+ax.set_ylim(0, 10)
+
+
+#%%
+x = np.arange(0, 5, 0.1)
+plt.plot(x, poisson_deviance(np.arange([1]), x))
+
+
+#%%
+df2 = pl.from_pandas(df)
+
+compcols = df2.select(pl.col(pl.Float64).exclude("passenger_count")).columns
+
+df2.select(
+    [pl.spearman_rank_corr(pl.col("passenger_count"), compcol).alias(f"_{compcol}") for compcol in compcols]
+).transpose(include_header=True).sort(by="column_0")
+
+#%%
