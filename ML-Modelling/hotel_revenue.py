@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 #%%
-df = pd.read_excel("COVID19_time_series.xlsx")
+df = pd.read_excel("data/COVID19_time_series.xlsx")
 
 #%%
 def fix_dtypes(data: pd.DataFrame) -> pd.DataFrame:
