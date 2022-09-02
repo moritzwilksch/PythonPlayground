@@ -72,10 +72,18 @@ def split_data(clean: pd.DataFrame) -> tuple:
             "tolls_amount",
             "improvement_surcharge",
             "congestion_surcharge",
+            # Attention! Drop features w/ less importance than random feature
+            "store_and_fwd_flag",
+            "airport_fee",
+            "passenger_count",
+            "VendorID",
         ],
         axis=1,
     )
     y = clean["total_amount"]
+
+    # Add random feature
+    # X = X.assign(random_feature=np.random.random(size=len(X)))
 
     xtrainval, xtest, ytrainval, ytest = train_test_split(X, y, random_state=42)
     xtrain, xval, ytrain, yval = train_test_split(xtrainval, ytrainval, random_state=42)
@@ -87,7 +95,9 @@ X, y, xtrain, ytrain, xval, yval, xtest, ytest = split_data(clean)
 #%%
 from lightgbm.callback import early_stopping
 
-model = LGBMRegressor(n_estimators=1_000, num_leaves=32, objective="mae")
+model = LGBMRegressor(
+    n_estimators=1_000, num_leaves=32, objective="mae", importance_type="gain"
+)
 model.fit(
     xtrain,
     ytrain,
@@ -99,12 +109,29 @@ model.fit(
 
 #%%
 val_preds = model.predict(xval)
-plt.scatter(yval, val_preds)
+plt.hexbin(yval, val_preds, bins="log", gridsize=50)
 
 #%%
 from lightgbm.plotting import plot_importance
 
-plot_importance(model)
+plot_importance(model, max_num_features=10)
+
+#%%
+from sklearn.inspection import permutation_importance
+
+imp_results = permutation_importance(
+    model,
+    xval,
+    yval,
+    max_samples=100_000,
+    n_repeats=1,
+    scoring="neg_mean_absolute_percentage_error",
+)
+impdf = pd.DataFrame(
+    {"imp": imp_results["importances_mean"], "name": xtrain.columns}
+).set_index("name")
+impdf.plot(kind="barh")
+print(impdf.sort_values("imp"))
 
 #%%
 from sklearn.metrics import mean_absolute_error, mean_absolute_percentage_error
@@ -236,7 +263,10 @@ df2 = pl.from_pandas(df)
 compcols = df2.select(pl.col(pl.Float64).exclude("passenger_count")).columns
 
 df2.select(
-    [pl.spearman_rank_corr(pl.col("passenger_count"), compcol).alias(f"_{compcol}") for compcol in compcols]
+    [
+        pl.spearman_rank_corr(pl.col("passenger_count"), compcol).alias(f"_{compcol}")
+        for compcol in compcols
+    ]
 ).transpose(include_header=True).sort(by="column_0")
 
 #%%
