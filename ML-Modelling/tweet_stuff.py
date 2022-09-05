@@ -23,6 +23,7 @@ from sklearn.naive_bayes import GaussianNB
 #%%
 from sklearn.linear_model import LogisticRegression
 
+
 model = LogisticRegression(max_iter=300, n_jobs=-1)
 model.fit(xtrain, ytrain)
 
