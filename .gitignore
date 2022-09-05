@@ -4,3 +4,5 @@ createTwitterAPI.py
 *.pkl
 .env
 data/*
+.ipynb_checkpoints
+.virtual_documents
