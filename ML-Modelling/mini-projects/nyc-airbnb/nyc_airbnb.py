@@ -1,4 +1,5 @@
 #%%
+import imp
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 from random import random
 from sklearn.model_selection import train_test_split
@@ -29,6 +30,15 @@ def drop_zero_price_rows(data: pd.DataFrame) -> pd.DataFrame:
     return data
 
 
+def drop_outliers(data: pd.DataFrame) -> pd.DataFrame:
+    n_before = len(data)
+    data = data.loc[data["price"] <= np.quantile(data["price"], 0.99)]
+    data = data.loc[data["minimum_nights"] <= np.quantile(data["minimum_nights"], 0.99)]
+    n_after = len(data)
+    print(f"INFO: dropped {n_before - n_after} outliers")
+    return data
+
+
 def merge_rare_neighborhoods(data: pd.DataFrame) -> pd.DataFrame:
     n_occurences = df["neighbourhood"].value_counts()
     rare_neigborhoods = n_occurences[n_occurences < 10].index.to_list()
@@ -39,6 +49,7 @@ def merge_rare_neighborhoods(data: pd.DataFrame) -> pd.DataFrame:
 
 def transform_response(data: pd.DataFrame) -> pd.DataFrame:
     return data.assign(log_price=np.log(data["price"])).drop("price", axis=1)
+    # return data.assign(log_price=data["price"]).drop("price", axis=1)
 
 
 def fix_dtypes(data: pd.DataFrame) -> pd.DataFrame:
@@ -61,6 +72,7 @@ clean = (
     df.copy()
     .pipe(drop_unused_cols)
     .pipe(drop_zero_price_rows)
+    .pipe(drop_outliers)
     .pipe(merge_rare_neighborhoods)
     .pipe(transform_response)
     .pipe(fix_dtypes)
@@ -122,6 +134,8 @@ from lightgbm import LGBMRegressor
 
 model = LGBMRegressor(n_estimators=1000)
 model.fit(x_train, y_train, eval_set=[(x_val, y_val)], early_stopping_rounds=50)
+
+#%%
 eval_preds("LGBM Vanilla", y_val, model.predict(x_val))
 
 #%%
@@ -130,7 +144,7 @@ import optuna
 
 def fit_model(params, x_train, y_train, x_val, y_val):
     model = LGBMRegressor(n_estimators=1000, **params)
-    model.fit(x_train, y_train, eval_set=[(x_val, y_val)], early_stopping_rounds=50)
+    model.fit(x_train, y_train, eval_set=[(x_val, y_val)], early_stopping_rounds=50, verbose=0)
     return model
 
 
@@ -149,7 +163,29 @@ study.optimize(objective, n_trials=10)
 
 #%%
 model = fit_model(study.best_params, x_train, y_train, x_val, y_val)
-
+eval_preds("LGBM Optuna", y_val, model.predict(x_val))
 #%%
 preds = model.predict(x_val)
-plt.scatter(y_val, preds)
+plt.scatter(y_val, preds, color="k", alpha=0.2)
+plt.plot([3, 7], [3, 7], color="r")
+#%%
+plt.scatter(y_val, preds - y_val, color="k", alpha=0.2)
+
+
+#%%
+from lightgbm.plotting import plot_importance
+plot_importance(model, max_num_features=10, importance_type="gain")
+
+#%%
+import duckdb
+
+duckdb.query(
+    """ 
+    WITH words as (
+        SELECT unnest(split(lower(name), ' ')) as word
+        FROM df
+        )
+    SELECT word, count(*) as n FROM words GROUP BY word ORDER BY n DESC
+
+ """
+).df().head(25)
