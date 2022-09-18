@@ -6,3 +6,5 @@ createTwitterAPI.py
 data/*
 .ipynb_checkpoints
 .virtual_documents
+lightning_logs
+*.pyc
