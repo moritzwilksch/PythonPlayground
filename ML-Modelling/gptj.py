@@ -6,6 +6,10 @@ pipe = pipeline("text-generation", model="EleutherAI/gpt-j-6B")
 
 #%%
 pipe(
-    "",
-    max_new_tokens=100,
+    """ 
+    # return the greater of the two numbers.
+    def greater_number(a, b):
+        return
+    """,
+    max_new_tokens=50,
 )
