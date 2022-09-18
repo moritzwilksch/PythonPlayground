@@ -20,6 +20,7 @@ from torchtext.vocab import build_vocab_from_iterator
 #%%
 pool = Pool()
 
+
 ps = PorterStemmer()
 stopwords = nltk.corpus.stopwords.words("german")
 
