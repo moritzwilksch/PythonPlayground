@@ -7,15 +7,15 @@ import polars as pl
 import pytorch_lightning as pl
 import ray
 import torch
+import torch.functional as F
 import torch.nn as nn
 import torch.nn.functional as F
+import torchtext
 from nltk.stem import PorterStemmer
 from ray.util.multiprocessing import Pool
 from sklearn.model_selection import train_test_split
-import torchtext
-from torchtext.vocab import build_vocab_from_iterator
-import torch.functional as F
 from torchmetrics.functional import precision
+from torchtext.vocab import build_vocab_from_iterator
 
 #%%
 pool = Pool()
@@ -41,8 +41,8 @@ def prep_text(s: str) -> str:
 
 preped_text = pool.map(prep_text, df["text"].to_list())
 
+df["text"] = preped_text
 df_subset = df[["text", "relevant"]]
-df_subset["text"] = preped_text
 
 
 #%%
@@ -64,7 +64,9 @@ def build_vocab(data):
 
 
 tokenizer = torchtext.data.get_tokenizer("basic_english")
-vocab = build_vocab_from_iterator(build_vocab(df_subset["text"]), specials=["<UNK>"])
+vocab = build_vocab_from_iterator(
+    build_vocab(df_subset["text"]), specials=["<UNK>"], min_freq=10
+)
 vocab.set_default_index(vocab["<UNK>"])
 
 #%%
@@ -75,6 +77,7 @@ vocab(tokenizer("hello world"))
 def text_to_ids(text):
     return vocab(tokenizer(text))
 
+
 sequence_of_ids = [text_to_ids.remote(txt) for txt in df_subset["text"]]
 sequence_of_ids = ray.get(sequence_of_ids)
 
@@ -82,7 +85,7 @@ xtrain, xtest, ytrain, ytest = train_test_split(
     sequence_of_ids, df_subset["relevant"], test_size=0.2, random_state=42
 )
 
-
+ray.shutdown()
 #%%
 
 
@@ -158,6 +161,6 @@ class ASModel(pl.LightningModule):
 
 #%%
 model = ASModel()
-trainer = pl.Trainer(max_epochs=10,)
+trainer = pl.Trainer(max_epochs=10)
 
 trainer.fit(model, train_dataloader, test_dataloader)
