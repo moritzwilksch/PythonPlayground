@@ -120,7 +120,10 @@ class ASModel(pl.LightningModule):
     def __init__(self):
         super().__init__()
         self.emb = nn.Embedding(len(vocab) + 1, 64)
+
         self.rnn = nn.GRU(input_size=64, hidden_size=128, num_layers=1, batch_first=True)
+        self.transformer = nn.TransformerEncoderLayer(64, 1)
+
         self.l1 = nn.Linear(128, 64)
         self.l2 = nn.Linear(64, 1)
 
@@ -131,10 +134,14 @@ class ASModel(pl.LightningModule):
 
     def forward(self, x):
         x = self.emb(x.long())
-        out, hidden = self.rnn(x)
+
+        # out, hidden = self.rnn(x)
+        hidden = self.transformer(x)
+        hidden = hidden[:, -1, :]
+
         x = hidden.squeeze()
-        x = self.l1(x)
-        x = self.relu(x)
+        # x = self.l1(x)
+        # x = self.relu(x)
         x = self.l2(x)
         x = torch.sigmoid(x)
         return x
