@@ -32,6 +32,7 @@ for direct_link in direct_page_links:
 
 
 #%%
+has_no_example = list(set(has_no_example))
 with open("has_no_example.txt", "w") as f:
     f.writelines("\n".join(has_no_example))
     
